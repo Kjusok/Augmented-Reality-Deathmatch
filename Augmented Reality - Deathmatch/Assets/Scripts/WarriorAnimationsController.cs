@@ -5,6 +5,7 @@ public class WarriorAnimationsController : MonoBehaviour, IPointerDownHandler, I
 {
     [SerializeField] private float _speed = 5f;
     [SerializeField] private Animator _animator;
+    //[SerializeField] private GameObject _warrior;
 
     private float _timerForAnimationIdle;
 
