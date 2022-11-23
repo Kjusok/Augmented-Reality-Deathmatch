@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class WarriorController : MonoBehaviour
@@ -6,6 +7,8 @@ public class WarriorController : MonoBehaviour
     [SerializeField] private int _speed;
     [SerializeField] private Shot _shotPrefab;
     [SerializeField] private Transform _ganBarrel;
+
+    private float _delayForNextShot = 0.6f;
 
 
     private GameObject FindClosestEnemy()
@@ -37,6 +40,17 @@ public class WarriorController : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, rotation, _speed * Time.deltaTime);
     }
 
+    private IEnumerator Shoting()
+    {
+        while (Input.GetKey(KeyCode.Space))
+        {
+            yield return new WaitForSeconds(_delayForNextShot);
+
+             Instantiate(_shotPrefab, _ganBarrel.position, transform.rotation);
+            _delayForNextShot = 0.5f;
+        }
+    }
+
     private void Update()
     {
         if (FindClosestEnemy())
@@ -44,10 +58,14 @@ public class WarriorController : MonoBehaviour
             RotationToClosestEnemy();
         }
 
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            var shot = Instantiate(_shotPrefab, _ganBarrel.position, transform.rotation);
-            //shot.transform.SetParent(_ganBarrel.transform, true);
+            StartCoroutine(Shoting());
+        }
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            StopAllCoroutines();
+            _delayForNextShot = 0.6f;
         }
     }
 }

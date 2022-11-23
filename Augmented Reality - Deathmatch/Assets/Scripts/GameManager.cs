@@ -18,17 +18,16 @@ public class GameManager : MonoBehaviour
     }
 
     [SerializeField] private GameObject _warrior;
-    [SerializeField] public List<GameObject> Enemies;
+    [SerializeField] private GameObject _spawnAura;
+
+    public List<GameObject> Enemies;
 
 
     private void Awake()
     {
         _instance = this;
     }
-    void Start()
-    {
-        
-    }
+
     private void OnDestroy()
     {
         if (_instance == this)
@@ -36,11 +35,13 @@ public class GameManager : MonoBehaviour
             _instance = null;
         }
     }
+
     private void InstantiateWarrior()
     {
         var enemy = Instantiate(_warrior, new Vector3(Random.Range(-12, 12), 0.062f, Random.Range(3, 20)), Quaternion.identity);
         Enemies.Add(enemy);
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.S))
