@@ -19,8 +19,10 @@ public class Shot : MonoBehaviour
     private void SpawnSparksEffect()
     {
         var effect = Instantiate(_sparksEffect.gameObject, transform.position, Quaternion.identity);
-        Destroy(effect,_sparksEffect.main.startLifetime.constant);
+        Destroy(effect, _sparksEffect.main.startLifetime.constant);
     }
+
+   
 
     private void Update()
     {

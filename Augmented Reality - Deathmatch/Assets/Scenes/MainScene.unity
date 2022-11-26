@@ -449,8 +449,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _warrior: {fileID: 7114476919347950937, guid: ef60a250581c22243b2120a99c908461, type: 3}
-  Enemies: []
   _spawnAura: {fileID: 0}
+  Enemies: []
 --- !u!114 &1156224350
 MonoBehaviour:
   m_ObjectHideFlags: 0

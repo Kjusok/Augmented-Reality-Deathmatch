@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7e58f38d10fcc9a498d348e7339ce3ec
+guid: bddebfc3673d400448f27d55368046d5
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
@@ -502,14 +502,7 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events:
-      - time: 0.5288136
-        functionName: Shoting
-        data: 
-        objectReferenceParameter: {fileID: 7114476919347950937, guid: ef60a250581c22243b2120a99c908461, type: 3}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
+      events: []
       transformMask:
       - path: 
         weight: 1

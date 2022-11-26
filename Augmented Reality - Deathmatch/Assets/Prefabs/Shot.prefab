@@ -180,6 +180,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 70
   _sparksEffect: {fileID: 2949610213108543572, guid: 89b971b8838becd4f967c03d8ef6f846, type: 3}
+  _sparksEffectFromBarrelGun: {fileID: 4118878036268696415, guid: b56d8eae2c7190e42b8a967333609af5, type: 3}
 --- !u!136 &4517715874324589561
 CapsuleCollider:
   m_ObjectHideFlags: 0

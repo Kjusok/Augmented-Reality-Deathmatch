@@ -3,45 +3,57 @@ using UnityEngine.EventSystems;
 
 public class WarriorAnimationsController : MonoBehaviour, IPointerDownHandler, IPointerClickHandler
 {
-    [SerializeField] private float _speed = 5f;
     [SerializeField] private Animator _animator;
-    //[SerializeField] private GameObject _warrior;
+    [SerializeField] private WarriorController _rotationFlag; 
 
     private float _timerForAnimationIdle;
 
-    
+    private void Awake()
+    {
+        CreateSpeedAttack();
+    }
+
     private void Update()
     {
         AnimationRotation();
-        Shooting();
+        AnimationShoting();
         AnimationsIdleEvent();
         DeathAnimation();
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            _animator.SetBool("Hit", true);
+        }
+        else
+        {
+            _animator.SetBool("Hit", false);
+        }
+    }
+
+    private void CreateSpeedAttack()
+    {
+        var speed = Random.Range(1, 4);
+        _animator.SetFloat("AttackSpeed", speed);
     }
 
     private void AnimationRotation()
     {
-        var horizontal = Input.GetAxis("Horizontal");
-        transform.Rotate(0.0f, horizontal * _speed, 0.0f, Space.World);
-
-        if (horizontal > 0)
+        if (_rotationFlag.PlayngAnimRotationRight)
         {
             _animator.SetBool("RightTurn", true);
         }
-        else
+        else if(_rotationFlag.PlayngAnimRotationLeft)
         {
             _animator.SetBool("LeftTurn", true);
-
         }
-
-        if (horizontal == 0)
+        else if (!_rotationFlag.PlayngAnimRotationRight && !_rotationFlag.PlayngAnimRotationLeft)
         {
             _animator.SetBool("RightTurn", false);
             _animator.SetBool("LeftTurn", false);
-
         }
     }
 
-    private void Shooting()
+    private void AnimationShoting()
     {
         if (Input.GetKey(KeyCode.Space))
         {

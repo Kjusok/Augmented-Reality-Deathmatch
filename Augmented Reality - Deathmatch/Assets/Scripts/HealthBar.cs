@@ -7,6 +7,7 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private List<GameObject> _healthDotsList;
     [SerializeField] private List<float> _valueForDestroyDotsList;
     [SerializeField] private int _health = 100;
+    [SerializeField] private GameObject _heathUpText;
 
     private float _healthInOneDot;
     private float _healthInStart;
@@ -103,6 +104,7 @@ public class HealthBar : MonoBehaviour
             forward.Normalize();
             var up = Vector3.Cross(forward, camXform.right);
             transform.rotation = Quaternion.LookRotation(forward, up);
+            _heathUpText.transform.rotation = Quaternion.LookRotation(forward, up);
         }
     }
 }
