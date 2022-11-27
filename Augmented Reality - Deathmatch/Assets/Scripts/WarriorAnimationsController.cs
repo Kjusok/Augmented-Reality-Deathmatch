@@ -1,12 +1,14 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
+using System;
 
-public class WarriorAnimationsController : MonoBehaviour, IPointerDownHandler, IPointerClickHandler
+public class WarriorAnimationsController : MonoBehaviour
 {
-    [SerializeField] private Animator _animator;
-    [SerializeField] private WarriorController _rotationFlag; 
+    private const float MinForSpeedAttackAnim = 0.7f;
+    private const float MaxForSpeedAttackAnim = 1.5f;
 
-    private float _timerForAnimationIdle;
+    [SerializeField] private Animator _animator;
+    [SerializeField] private WarriorController _animationFlag; 
+
 
     private void Awake()
     {
@@ -18,35 +20,25 @@ public class WarriorAnimationsController : MonoBehaviour, IPointerDownHandler, I
         AnimationRotation();
         AnimationShoting();
         AnimationsIdleEvent();
-        DeathAnimation();
-
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            _animator.SetBool("Hit", true);
-        }
-        else
-        {
-            _animator.SetBool("Hit", false);
-        }
     }
 
     private void CreateSpeedAttack()
     {
-        var speed = Random.Range(1, 4);
+        var speed = (float) Math.Round(UnityEngine.Random.Range(MinForSpeedAttackAnim, MaxForSpeedAttackAnim),2);
         _animator.SetFloat("AttackSpeed", speed);
     }
 
     private void AnimationRotation()
     {
-        if (_rotationFlag.PlayngAnimRotationRight)
+        if (_animationFlag.PlayngAnimRotationRight)
         {
             _animator.SetBool("RightTurn", true);
         }
-        else if(_rotationFlag.PlayngAnimRotationLeft)
+        else if(_animationFlag.PlayngAnimRotationLeft)
         {
             _animator.SetBool("LeftTurn", true);
         }
-        else if (!_rotationFlag.PlayngAnimRotationRight && !_rotationFlag.PlayngAnimRotationLeft)
+        else if (!_animationFlag.PlayngAnimRotationRight && !_animationFlag.PlayngAnimRotationLeft)
         {
             _animator.SetBool("RightTurn", false);
             _animator.SetBool("LeftTurn", false);
@@ -55,7 +47,7 @@ public class WarriorAnimationsController : MonoBehaviour, IPointerDownHandler, I
 
     private void AnimationShoting()
     {
-        if (Input.GetKey(KeyCode.Space))
+        if (_animationFlag.PlayngAnimShooting)
         {
             _animator.SetBool("Shoot", true);
         }
@@ -67,12 +59,9 @@ public class WarriorAnimationsController : MonoBehaviour, IPointerDownHandler, I
 
     private void AnimationsIdleEvent()
     {
-        _timerForAnimationIdle += Time.deltaTime;
-
-        if (_timerForAnimationIdle >= 10f)
+        if (_animationFlag.PlayngAnimIdleEvent)
         {
             _animator.SetBool("IdleEvent", true);
-            _timerForAnimationIdle = 0;
         }
         else
         {
@@ -80,20 +69,18 @@ public class WarriorAnimationsController : MonoBehaviour, IPointerDownHandler, I
         }
     }
 
-    private void DeathAnimation()
+    public void AnimationsTakeHit()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            _animator.SetTrigger("Death");
-        }
+        _animator.SetTrigger("Hit");
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public void DeathAnimation()
+    {
+        _animator.SetTrigger("Death");
+    }
+
+    public void JumpAnimation()
     {
         _animator.SetTrigger("Jump");
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
     }
 }

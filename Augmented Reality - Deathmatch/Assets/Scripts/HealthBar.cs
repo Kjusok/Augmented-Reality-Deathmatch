@@ -6,7 +6,7 @@ public class HealthBar : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _healthDotsList;
     [SerializeField] private List<float> _valueForDestroyDotsList;
-    [SerializeField] private int _health = 100;
+    [SerializeField] private WarriorController _health;
     [SerializeField] private GameObject _heathUpText;
 
     private float _healthInOneDot;
@@ -15,14 +15,14 @@ public class HealthBar : MonoBehaviour
 
     private void Awake()
     {
-        _healthInStart = _health;
+        _healthInStart = _health.Health;
 
         CalculateHealthAtOneDot();
     }
 
     private void CalculateHealthAtOneDot()
     {
-        _healthInOneDot = (float)_health / _healthDotsList.Count;
+        _healthInOneDot = (float)_health.Health / _healthDotsList.Count;
 
         var value = 0f;
 
@@ -33,28 +33,13 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    private void TakeDamage()
-    {
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            if (_health >= 0)
-            {
-                _health -= 5;
-
-                ChangeColorDots();
-            }
-
-            CheckCurrentHealthDots();
-        }
-    }
-
     private void CheckCurrentHealthDots()
     {
         for (int i = 0; i < _valueForDestroyDotsList.Count; i++)
         {
             var dotValue = _valueForDestroyDotsList[i];
 
-            if (_health <= dotValue)
+            if (_health.Health <= dotValue)
             {
                 _healthDotsList[i].SetActive(false);
             }
@@ -67,7 +52,8 @@ public class HealthBar : MonoBehaviour
 
     private void ChangeColorDots()
     {
-        var value = _health  / _healthInStart;
+        var value = _health.Health / _healthInStart;
+        ;
 
         foreach (GameObject dot in _healthDotsList)
         {
@@ -76,26 +62,10 @@ public class HealthBar : MonoBehaviour
         }
     }
 
-    private void HealthRecovery()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            _health += 25;
-
-            if (_health > _healthInStart)
-            {
-                _health = (int) _healthInStart;
-            }
-
-            CheckCurrentHealthDots();
-            ChangeColorDots();
-        }
-    }
-
     private void Update()
     {
-        HealthRecovery();
-        TakeDamage();
+        CheckCurrentHealthDots();
+        ChangeColorDots();
 
         if (Camera.main != null)
         {

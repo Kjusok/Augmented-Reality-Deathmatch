@@ -22494,7 +22494,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.2
-    functionName: Shoting
+    functionName: SpawnLaserBullet
     data: 
     objectReferenceParameter: {fileID: 7114476919347950937, guid: ef60a250581c22243b2120a99c908461, type: 3}
     floatParameter: 0
