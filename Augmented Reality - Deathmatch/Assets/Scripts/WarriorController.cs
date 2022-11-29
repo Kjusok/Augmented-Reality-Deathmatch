@@ -230,6 +230,7 @@ public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerCli
             _isDead = true;
             _healthBar.SetActive(false);
             _warriorAnimations.DeathAnimation();
+            GameManager.Instance.RemoveNumbersFromUI();
         }
     }
 
