@@ -12,6 +12,18 @@ public class Shot : MonoBehaviour
     public int Damage;
 
 
+    private void Update()
+    {
+        _lifeTimer += Time.deltaTime;
+
+        if (_lifeTimer > TimeForDestroyShot)
+        {
+            Destroy(gameObject);
+        }
+
+        transform.position += transform.forward * Time.deltaTime * _speed;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         other.GetComponent<WarriorController>().TakeDamage(Damage);
@@ -24,17 +36,5 @@ public class Shot : MonoBehaviour
     {
         var effect = Instantiate(_sparksEffect.gameObject, transform.position, Quaternion.identity);
         Destroy(effect, _sparksEffect.main.startLifetime.constant);
-    }
-
-    private void Update()
-    {
-        _lifeTimer += Time.deltaTime;
-
-        if(_lifeTimer > TimeForDestroyShot)
-        {
-            Destroy(gameObject);
-        }
-
-        transform.position += transform.forward * Time.deltaTime * _speed;
     }
 }

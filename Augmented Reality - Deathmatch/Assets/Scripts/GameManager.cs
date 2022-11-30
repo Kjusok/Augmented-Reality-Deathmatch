@@ -22,11 +22,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _spawnAuraEffect;
     [SerializeField] private GameObject _setupModeText;
     [SerializeField] private Text _numbersOfWarriorsOnSceneText;
-    [SerializeField] private Toggle _toggleSetupMode;
 
     private int _counter;
 
     public List<GameObject> Enemies;
+    public Toggle ToggleSetupMode;
 
 
     private void Awake()
@@ -42,34 +42,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void InstantiateWarrior()
+    private void Update()
     {
-        if (_counter < 5)
+        if (_counter == 5)
         {
-            var enemy = Instantiate(_warriorPrefab, new Vector3(Random.Range(-12, 12), 0.062f, Random.Range(3, 20)), Quaternion.identity);
-            Enemies.Add(enemy);
-
-            AddNumbersOnUI();
+            ToggleSetupMode.interactable = false;
+            ToggleSetupMode.isOn = false;
         }
-    }
+        else
+        {
+            ToggleSetupMode.interactable = true;
+        }
 
-    private void AddNumbersOnUI()
-    {
-        _counter++;
-        _numbersOfWarriorsOnSceneText.text = _counter.ToString() + "/5";
-    }
-
-    public void RemoveNumbersFromUI()
-    {
-        _counter--;
-        _numbersOfWarriorsOnSceneText.text = _counter.ToString() + "/5";
+        CheckButtonDown();
     }
 
     private void CheckButtonDown()
     {
-        ColorBlock colorBlock = _toggleSetupMode.colors;
+        ColorBlock colorBlock = ToggleSetupMode.colors;
 
-        if (_toggleSetupMode.isOn)
+        if (ToggleSetupMode.isOn)
         {
             _setupModeText.SetActive(true);
             colorBlock.normalColor = Color.gray;
@@ -84,27 +76,30 @@ public class GameManager : MonoBehaviour
             colorBlock.selectedColor = Color.white;
         }
 
-        _toggleSetupMode.colors = colorBlock;
+        ToggleSetupMode.colors = colorBlock;
     }
 
-    private void Update()
+    private void AddNumbersOnUI()
     {
-        if (_counter == 5)
-        {
-            _toggleSetupMode.interactable = false;
-        }
-        else
-        {
-            _toggleSetupMode.interactable = true;
-        }
+        _counter++;
+        _numbersOfWarriorsOnSceneText.text = _counter.ToString() + "/5";
+    }
 
-        CheckButtonDown();
+    public void RemoveNumbersFromUI()
+    {
+        _counter--;
+        _numbersOfWarriorsOnSceneText.text = _counter.ToString() + "/5";
+    }
 
-        if (Input.GetKeyDown(KeyCode.S))
+    public void InstantiateWarrior(Vector3 position, Quaternion rotation)
+    {
+        if (_counter < 5)
         {
-            InstantiateWarrior();
+            var enemy = Instantiate(_warriorPrefab, position, rotation);
+            Enemies.Add(enemy);
+
+            AddNumbersOnUI();
         }
     }
 
-    
 }

@@ -20,6 +20,22 @@ public class HealthBar : MonoBehaviour
         CalculateHealthAtOneDot();
     }
 
+    private void Update()
+    {
+        CheckCurrentHealthDots();
+        ChangeColorDots();
+
+        if (Camera.main != null)
+        {
+            var camXform = Camera.main.transform;
+            var forward = transform.position - camXform.position;
+            forward.Normalize();
+            var up = Vector3.Cross(forward, camXform.right);
+            transform.rotation = Quaternion.LookRotation(forward, up);
+            _heathUpText.transform.rotation = Quaternion.LookRotation(forward, up);
+        }
+    }
+
     private void CalculateHealthAtOneDot()
     {
         _healthInOneDot = (float)_health.Health / _healthDotsList.Count;
@@ -59,22 +75,6 @@ public class HealthBar : MonoBehaviour
         {
             var color = dot.GetComponent<Image>();
             color.color = new Color(1, value, 0);
-        }
-    }
-
-    private void Update()
-    {
-        CheckCurrentHealthDots();
-        ChangeColorDots();
-
-        if (Camera.main != null)
-        {
-            var camXform = Camera.main.transform;
-            var forward = transform.position - camXform.position;
-            forward.Normalize();
-            var up = Vector3.Cross(forward, camXform.right);
-            transform.rotation = Quaternion.LookRotation(forward, up);
-            _heathUpText.transform.rotation = Quaternion.LookRotation(forward, up);
         }
     }
 }

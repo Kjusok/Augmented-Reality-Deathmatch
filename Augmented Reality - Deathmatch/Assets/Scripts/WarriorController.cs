@@ -67,6 +67,38 @@ public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerCli
         _damage = UnityEngine.Random.Range(MinDamage, MaxDamage);
         _healthInStart = Health;
     }
+    private void Update()
+    {
+        ShowsHealthBar();
+        DestroyAfterDeath();
+
+        if (FindClosestEnemy())
+        {
+            if (_isSpawned && !_isDead)
+            {
+                RotationToClosestEnemy();
+                Shooting();
+            }
+        }
+        else
+        {
+            PlayngAnimRotationRight = false;
+            PlayngAnimRotationLeft = false;
+            PlayngAnimShooting = false;
+
+            _timerForIdleEventAnim += Time.deltaTime;
+
+            if (_timerForIdleEventAnim >= TimeForIdleEventAnim)
+            {
+                _timerForIdleEventAnim = 0;
+                PlayngAnimIdleEvent = true;
+            }
+            else
+            {
+                PlayngAnimIdleEvent = false;
+            }
+        }
+    }
 
     private GameObject FindClosestEnemy()
     {
@@ -179,39 +211,6 @@ public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerCli
         else if (!_isDead)
         {
             _healthBar.SetActive(true);
-        }
-    }
-
-    private void Update()
-    {
-        ShowsHealthBar();
-        DestroyAfterDeath();
-
-        if (FindClosestEnemy())
-        {
-            if (_isSpawned && !_isDead)
-            {
-                RotationToClosestEnemy();
-                Shooting();
-            }
-        }
-        else
-        {
-            PlayngAnimRotationRight = false;
-            PlayngAnimRotationLeft = false;
-            PlayngAnimShooting = false;
-
-            _timerForIdleEventAnim += Time.deltaTime;
-
-            if (_timerForIdleEventAnim >= TimeForIdleEventAnim)
-            {
-                _timerForIdleEventAnim = 0;
-                PlayngAnimIdleEvent = true;
-            }
-            else
-            {
-                PlayngAnimIdleEvent = false;
-            }
         }
     }
 
