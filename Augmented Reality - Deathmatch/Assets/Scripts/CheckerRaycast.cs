@@ -1,23 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CheckerRaycast : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
+public class CheckerRaycast : MonoBehaviour, IPointerDownHandler
 {
-    public bool CanSpawn
-    {
-        get; private set;
-    }
-    public void OnPointerClick(PointerEventData eventData)
-    {
-    }
+    [SerializeField] private ARTapToPlaceObject _arTapToPlaceObject;
+   
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        CanSpawn = true;
-    }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        CanSpawn = false;
+        _arTapToPlaceObject.SpawnWarriorOnPlacementIndicatorPosition();
     }
 }

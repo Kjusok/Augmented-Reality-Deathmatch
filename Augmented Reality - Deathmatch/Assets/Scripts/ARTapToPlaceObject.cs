@@ -19,6 +19,7 @@ public class ARTapToPlaceObject : MonoBehaviour
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
+
     private void Update()
     {
         if (GameManager.Instance.ToggleSetupMode.isOn)
@@ -31,14 +32,6 @@ public class ARTapToPlaceObject : MonoBehaviour
         else
         {
             _spawnPosition.SetActive(false);
-        }
-
-        if (_placementPoseIsValid && 
-            Input.touchCount > 0 &&
-            Input.GetTouch(0).phase == TouchPhase.Began && 
-            GameManager.Instance.ToggleSetupMode.isOn)
-        {
-            GameManager.Instance.TryInstantiateWarrior(_placementPose.position, _placementPose.rotation);
         }
     }
 
@@ -69,6 +62,14 @@ public class ARTapToPlaceObject : MonoBehaviour
         else
         {
             _placementIndificator.SetActive(false);
+        }
+    }
+
+    public void SpawnWarriorOnPlacementIndicatorPosition()
+    {
+        if (_placementPoseIsValid && GameManager.Instance.ToggleSetupMode.isOn)
+        {
+            GameManager.Instance.TryInstantiateWarrior(_placementPose.position, _placementPose.rotation);
         }
     }
 }

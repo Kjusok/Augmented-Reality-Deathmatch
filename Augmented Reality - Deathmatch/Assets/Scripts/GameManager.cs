@@ -23,14 +23,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _warriorPrefab;
     [SerializeField] private GameObject _spawnAuraEffect;
     [SerializeField] private GameObject _setupModeText;
+    [SerializeField] private GameObject _destroyModeText;
     [SerializeField] private Text _numbersOfWarriorsOnSceneText;
     [SerializeField] private List<GameObject> _enemies;
     [SerializeField] private Toggle _toggleSetupMode;
-
+    [SerializeField] private Toggle _toggleDestroyMode;
+ 
     private int _counter;
 
     public List<GameObject> Enemies => _enemies;
     public Toggle ToggleSetupMode => _toggleSetupMode;
+    public Toggle ToggleDestoryMode => _toggleDestroyMode;
 
 
     private void Awake()
@@ -48,12 +51,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            var enemy = Instantiate(_warriorPrefab, new Vector3(Random.Range(-5, 5), 1, Random.Range(-5, 5)), Quaternion.identity);
-            _enemies.Add(enemy);
-        }
-
         if (_counter == MaxLimitOfAvailableWarriors)
         {
             _toggleSetupMode.interactable = false;
@@ -64,29 +61,30 @@ public class GameManager : MonoBehaviour
             _toggleSetupMode.interactable = true;
         }
 
-        SetButtonDown();
+        SetButtonDown(_toggleSetupMode,_setupModeText);
+        SetButtonDown(_toggleDestroyMode,_destroyModeText);
     }
 
-    private void SetButtonDown()
+    private void SetButtonDown(Toggle mode, GameObject modeText)
     {
         ColorBlock colorBlock = _toggleSetupMode.colors;
 
-        if (_toggleSetupMode.isOn)
+        if (mode.isOn)
         {
-            _setupModeText.SetActive(true);
+            modeText.SetActive(true);
             colorBlock.normalColor = Color.gray;
             colorBlock.highlightedColor = Color.gray;
             colorBlock.selectedColor = Color.gray;
         }
         else
         {
-            _setupModeText.SetActive(false);
+            modeText.SetActive(false);
             colorBlock.normalColor = Color.white;
             colorBlock.highlightedColor = Color.white;
             colorBlock.selectedColor = Color.white;
         }
 
-        _toggleSetupMode.colors = colorBlock;
+        mode.colors = colorBlock;
     }
 
     private void AddNumbersOnUI()

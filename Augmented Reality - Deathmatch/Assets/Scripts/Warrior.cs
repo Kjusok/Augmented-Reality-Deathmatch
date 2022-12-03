@@ -214,6 +214,14 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
         }
     }
 
+    private void DeathState()
+    {
+        _isDead = true;
+        _healthBar.SetActive(false);
+        _warriorAnimations.DeathAnimation();
+        GameManager.Instance.WarriorDead();
+    }
+
     public void TakeDamage(int damage)
     {
         Health -= damage;
@@ -226,16 +234,13 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
 
         if (Health == 0 && !_isDead)
         {
-            _isDead = true;
-            _healthBar.SetActive(false);
-            _warriorAnimations.DeathAnimation();
-            GameManager.Instance.WarriorDead();
+            DeathState();
         }
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (_isSpawned && Health < _healthInStart && !_isDead)
+        if (_isSpawned && Health < _healthInStart && !_isDead && !GameManager.Instance.ToggleDestoryMode.isOn)
         {
             Health += _healthInStart / ValueForePercents;
 
@@ -245,6 +250,12 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
             }
 
             _warriorAnimations.JumpAnimation();
+        }
+
+        if (GameManager.Instance.ToggleDestoryMode.isOn)
+        {
+            Health = 0;
+            DeathState();
         }
     }
 }
