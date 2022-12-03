@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerClickHandler
+public class Warrior : MonoBehaviour, IPointerDownHandler
 {
     private const int MinHeath = 100;
     private const int MaxHeath = 201;
@@ -21,7 +21,7 @@ public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerCli
     [SerializeField] private Shot _shotPrefab;
     [SerializeField] private Transform _ganBarrel;
     [SerializeField] private ParticleSystem _sparksEffectFromBarrelGun;
-    [SerializeField] private WarriorAnimationsController _warriorAnimations;
+    [SerializeField] private WarriorAnimations _warriorAnimations;
     [SerializeField] private GameObject _healthBar;
 
     private bool _isShooting = false;
@@ -33,7 +33,7 @@ public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerCli
     private int _damage;
     private int _currentEnemyHealth;
     private float _timerForDeath;
-    private float _timerForIdleEventAnim;
+    private float _timerForIdleEventAnim = TimeForIdleEventAnim;
 
     public int Health
     {
@@ -86,11 +86,11 @@ public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerCli
             PlayngAnimRotationLeft = false;
             PlayngAnimShooting = false;
 
-            _timerForIdleEventAnim += Time.deltaTime;
+            _timerForIdleEventAnim -= Time.deltaTime;
 
-            if (_timerForIdleEventAnim >= TimeForIdleEventAnim)
+            if (_timerForIdleEventAnim <= 0)
             {
-                _timerForIdleEventAnim = 0;
+                _timerForIdleEventAnim = TimeForIdleEventAnim;
                 PlayngAnimIdleEvent = true;
             }
             else
@@ -116,7 +116,7 @@ public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerCli
                 {
                     _currentEnemy = enemy;
                     distance = curDistance;
-                    _currentEnemyHealth = _currentEnemy.GetComponent<WarriorController>().Health;
+                    _currentEnemyHealth = _currentEnemy.GetComponent<Warrior>().Health;
                 }
             }
         }
@@ -229,7 +229,7 @@ public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerCli
             _isDead = true;
             _healthBar.SetActive(false);
             _warriorAnimations.DeathAnimation();
-            GameManager.Instance.RemoveNumbersFromUI();
+            GameManager.Instance.WarriorDead();
         }
     }
 
@@ -246,10 +246,6 @@ public class WarriorController : MonoBehaviour, IPointerDownHandler, IPointerCli
 
             _warriorAnimations.JumpAnimation();
         }
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
     }
 }
 

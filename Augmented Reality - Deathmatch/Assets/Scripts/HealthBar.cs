@@ -4,76 +4,81 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> _healthDotsList;
-    [SerializeField] private List<float> _valueForDestroyDotsList;
-    [SerializeField] private WarriorController _health;
+    [SerializeField] private List<GameObject> _healthUnitsList;
+    [SerializeField] private List<float> _valueForDestroyUnitsList;
+    [SerializeField] private Warrior _health;
     [SerializeField] private GameObject _heathUpText;
 
-    private float _healthInOneDot;
+    private float _healthInOneUnit;
     private float _healthInStart;
+    private Camera _mainCamera;
 
 
     private void Awake()
     {
         _healthInStart = _health.Health;
 
-        CalculateHealthAtOneDot();
+        CalculateHealthAtOneUnit();
+    }
+
+    private void Start()
+    {
+        _mainCamera = Camera.main;
     }
 
     private void Update()
     {
-        CheckCurrentHealthDots();
-        ChangeColorDots();
+        CheckCurrentHealthUnits();
+        ChangeColorUnits();
 
-        if (Camera.main != null)
+        if (_mainCamera != null)
         {
-            var camXform = Camera.main.transform;
-            var forward = transform.position - camXform.position;
+            var camXForm = _mainCamera.transform;
+            var forward = transform.position - camXForm.position;
             forward.Normalize();
-            var up = Vector3.Cross(forward, camXform.right);
+            var up = Vector3.Cross(forward, camXForm.right);
             transform.rotation = Quaternion.LookRotation(forward, up);
             _heathUpText.transform.rotation = Quaternion.LookRotation(forward, up);
         }
     }
 
-    private void CalculateHealthAtOneDot()
+    private void CalculateHealthAtOneUnit()
     {
-        _healthInOneDot = (float)_health.Health / _healthDotsList.Count;
+        _healthInOneUnit = (float)_health.Health / _healthUnitsList.Count;
 
         var value = 0f;
 
-        for (int i = 0; _valueForDestroyDotsList.Count < _healthDotsList.Count; i++)
+        for (int i = 0; _valueForDestroyUnitsList.Count < _healthUnitsList.Count; i++)
         {
-            _valueForDestroyDotsList.Add(value);
-            value += _healthInOneDot;
+            _valueForDestroyUnitsList.Add(value);
+            value += _healthInOneUnit;
         }
     }
 
-    private void CheckCurrentHealthDots()
+    private void CheckCurrentHealthUnits()
     {
-        for (int i = 0; i < _valueForDestroyDotsList.Count; i++)
+        for (int i = 0; i < _valueForDestroyUnitsList.Count; i++)
         {
-            var dotValue = _valueForDestroyDotsList[i];
+            var unitValue = _valueForDestroyUnitsList[i];
 
-            if (_health.Health <= dotValue)
+            if (_health.Health <= unitValue)
             {
-                _healthDotsList[i].SetActive(false);
+                _healthUnitsList[i].SetActive(false);
             }
             else
             {
-                _healthDotsList[i].SetActive(true);
+                _healthUnitsList[i].SetActive(true);
             }
         }
     }
 
-    private void ChangeColorDots()
+    private void ChangeColorUnits()
     {
         var value = _health.Health / _healthInStart;
-        ;
 
-        foreach (GameObject dot in _healthDotsList)
+        foreach (GameObject unit in _healthUnitsList)
         {
-            var color = dot.GetComponent<Image>();
+            var color = unit.GetComponent<Image>();
             color.color = new Color(1, value, 0);
         }
     }

@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    private const int MaxLimitOfAvailableWarriors = 5;
+
     private static GameManager _instance;
 
     public static GameManager Instance
@@ -22,11 +24,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _spawnAuraEffect;
     [SerializeField] private GameObject _setupModeText;
     [SerializeField] private Text _numbersOfWarriorsOnSceneText;
+    [SerializeField] private List<GameObject> _enemies;
+    [SerializeField] private Toggle _toggleSetupMode;
 
     private int _counter;
 
-    public List<GameObject> Enemies;
-    public Toggle ToggleSetupMode;
+    public List<GameObject> Enemies => _enemies;
+    public Toggle ToggleSetupMode => _toggleSetupMode;
 
 
     private void Awake()
@@ -44,24 +48,30 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (_counter == 5)
+        if (Input.GetKeyDown(KeyCode.S))
         {
-            ToggleSetupMode.interactable = false;
-            ToggleSetupMode.isOn = false;
+            var enemy = Instantiate(_warriorPrefab, new Vector3(Random.Range(-5, 5), 1, Random.Range(-5, 5)), Quaternion.identity);
+            _enemies.Add(enemy);
+        }
+
+        if (_counter == MaxLimitOfAvailableWarriors)
+        {
+            _toggleSetupMode.interactable = false;
+            _toggleSetupMode.isOn = false;
         }
         else
         {
-            ToggleSetupMode.interactable = true;
+            _toggleSetupMode.interactable = true;
         }
 
-        CheckButtonDown();
+        SetButtonDown();
     }
 
-    private void CheckButtonDown()
+    private void SetButtonDown()
     {
-        ColorBlock colorBlock = ToggleSetupMode.colors;
+        ColorBlock colorBlock = _toggleSetupMode.colors;
 
-        if (ToggleSetupMode.isOn)
+        if (_toggleSetupMode.isOn)
         {
             _setupModeText.SetActive(true);
             colorBlock.normalColor = Color.gray;
@@ -76,30 +86,29 @@ public class GameManager : MonoBehaviour
             colorBlock.selectedColor = Color.white;
         }
 
-        ToggleSetupMode.colors = colorBlock;
+        _toggleSetupMode.colors = colorBlock;
     }
 
     private void AddNumbersOnUI()
     {
         _counter++;
-        _numbersOfWarriorsOnSceneText.text = _counter.ToString() + "/5";
+        _numbersOfWarriorsOnSceneText.text = _counter + "/5";
     }
 
-    public void RemoveNumbersFromUI()
+    public void WarriorDead()
     {
         _counter--;
-        _numbersOfWarriorsOnSceneText.text = _counter.ToString() + "/5";
+        _numbersOfWarriorsOnSceneText.text = _counter + "/5";
     }
 
-    public void InstantiateWarrior(Vector3 position, Quaternion rotation)
+    public void TryInstantiateWarrior(Vector3 position, Quaternion rotation)
     {
-        if (_counter < 5)
+        if (_counter < MaxLimitOfAvailableWarriors)
         {
             var enemy = Instantiate(_warriorPrefab, position, rotation);
-            Enemies.Add(enemy);
+            _enemies.Add(enemy);
 
             AddNumbersOnUI();
         }
     }
-
 }

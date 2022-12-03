@@ -5,28 +5,48 @@ using UnityEngine.XR.ARFoundation;
 
 public class ARTapToPlaceObject : MonoBehaviour
 {
-    private const float _midlleValue = 0.5f;
+    private const float MidlleValue = 0.5f;
 
     [SerializeField] private GameObject _placementIndificator;
     [SerializeField] private GameObject _spawnPosition;
+    [SerializeField] private ARRaycastManager _arRaycastManager;
 
-    private ARRaycastManager _arRaycatsManager;
     private Pose _placementPose;
     private bool _placementPoseIsValid = false;
-    private CheckerRaycast _checkRaycast;
 
 
     private void Start()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-       _arRaycatsManager = FindObjectOfType<ARRaycastManager>();
+    }
+    private void Update()
+    {
+        if (GameManager.Instance.ToggleSetupMode.isOn)
+        {
+            _spawnPosition.SetActive(true);
+
+            UpdatePlacementPose();
+            UpdatePlacementIndicator();
+        }
+        else
+        {
+            _spawnPosition.SetActive(false);
+        }
+
+        if (_placementPoseIsValid && 
+            Input.touchCount > 0 &&
+            Input.GetTouch(0).phase == TouchPhase.Began && 
+            GameManager.Instance.ToggleSetupMode.isOn)
+        {
+            GameManager.Instance.TryInstantiateWarrior(_placementPose.position, _placementPose.rotation);
+        }
     }
 
     private void UpdatePlacementPose()
     {
-        var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(_midlleValue, _midlleValue));
+        var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(MidlleValue, MidlleValue));
         var hits = new List<ARRaycastHit>();
-        _arRaycatsManager.Raycast(screenCenter, hits, TrackableType.Planes);
+        _arRaycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
 
         _placementPoseIsValid = hits.Count > 0;
 
@@ -49,30 +69,6 @@ public class ARTapToPlaceObject : MonoBehaviour
         else
         {
             _placementIndificator.SetActive(false);
-        }
-
-    }
-
-    private void Update()
-    {
-        if (GameManager.Instance.ToggleSetupMode.isOn)
-        {
-            _spawnPosition.SetActive(true);
-
-            UpdatePlacementPose();
-            UpdatePlacementIndicator();
-        }
-        else
-        {
-            _spawnPosition.SetActive(false);
-        }
-
-        if (_placementPoseIsValid && Input.touchCount > 0 &&
-            Input.GetTouch(0).phase == TouchPhase.Began && GameManager.Instance.ToggleSetupMode.isOn)
-            //&&
-            //_checkRaycast.CanSpawn)
-        {
-            GameManager.Instance.InstantiateWarrior(_placementPose.position, _placementPose.rotation);
         }
     }
 }

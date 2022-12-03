@@ -7,16 +7,16 @@ public class Shot : MonoBehaviour
     [SerializeField] private int _speed;
     [SerializeField] private ParticleSystem _sparksEffect;
 
-    private float _lifeTimer;
+    private float _lifeTimer = TimeForDestroyShot;
 
     public int Damage;
 
 
     private void Update()
     {
-        _lifeTimer += Time.deltaTime;
+        _lifeTimer -= Time.deltaTime;
 
-        if (_lifeTimer > TimeForDestroyShot)
+        if (_lifeTimer <= 0)
         {
             Destroy(gameObject);
         }
@@ -26,7 +26,7 @@ public class Shot : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        other.GetComponent<WarriorController>().TakeDamage(Damage);
+        other.GetComponent<Warrior>().TakeDamage(Damage);
        
         Destroy(gameObject);
         SpawnSparksEffect();
