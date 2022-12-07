@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> _healthChanksList;
-    [SerializeField] private List<float> _valueForDestroyChanksList;
+    [SerializeField] private List<GameObject> _healthChunksList;
+    [SerializeField] private List<float> _valueForDestroyChunksList;
     [SerializeField] private Warrior _health;
     [SerializeField] private GameObject _heathUpText;
 
@@ -44,30 +44,30 @@ public class HealthBar : MonoBehaviour
 
     private void CalculateHealthAtOneChunk()
     {
-        _healthInOneChunk = (float)_health.Health / _healthChanksList.Count;
+        _healthInOneChunk = (float)_health.Health / _healthChunksList.Count;
 
         var value = 0f;
 
-        while (_valueForDestroyChanksList.Count < _healthChanksList.Count)
+        while (_valueForDestroyChunksList.Count < _healthChunksList.Count)
         {
-            _valueForDestroyChanksList.Add(value);
+            _valueForDestroyChunksList.Add(value);
             value += _healthInOneChunk;
         }
     }
 
     private void CheckCurrentHealthChunks()
     {
-        for (int i = 0; i < _valueForDestroyChanksList.Count; i++)
+        for (int i = 0; i < _valueForDestroyChunksList.Count; i++)
         {
-            var unitValue = _valueForDestroyChanksList[i];
+            var unitValue = _valueForDestroyChunksList[i];
 
             if (_health.Health <= unitValue)
             {
-                _healthChanksList[i].SetActive(false);
+                _healthChunksList[i].SetActive(false);
             }
             else
             {
-                _healthChanksList[i].SetActive(true);
+                _healthChunksList[i].SetActive(true);
             }
         }
     }
@@ -76,7 +76,7 @@ public class HealthBar : MonoBehaviour
     {
         var value = _health.Health / _healthInStart;
 
-        foreach (GameObject unit in _healthChanksList)
+        foreach (GameObject unit in _healthChunksList)
         {
             var color = unit.GetComponent<Image>();
             color.color = new Color(1, value, 0);

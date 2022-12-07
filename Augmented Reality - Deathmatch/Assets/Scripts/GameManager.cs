@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Toggle _toggleSetupMode;
     [SerializeField] private Toggle _toggleDestroyMode;
  
-    private int _currentAmountWarriors;
+    private int _amountWarriors;
 
     public List<Warrior> Enemies => _enemies;
     public Toggle ToggleSetupMode => _toggleSetupMode;
@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (_currentAmountWarriors == MaxLimitOfAvailableWarriors)
+        if (_amountWarriors == MaxLimitOfAvailableWarriors)
         {
             _toggleSetupMode.interactable = false;
             _toggleSetupMode.isOn = false;
@@ -88,19 +88,19 @@ public class GameManager : MonoBehaviour
 
     private void AddNumbersOnUI()
     {
-        _currentAmountWarriors++;
-        _numbersOfWarriorsOnSceneText.text = _currentAmountWarriors + "/5";
+        _amountWarriors++;
+        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/5";
     }
 
     public void WarriorDead()
     {
-        _currentAmountWarriors--;
-        _numbersOfWarriorsOnSceneText.text = _currentAmountWarriors + "/5";
+        _amountWarriors--;
+        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/5";
     }
 
     public void TryInstantiateWarrior(Vector3 position, Quaternion rotation)
     {
-        if (_currentAmountWarriors < MaxLimitOfAvailableWarriors)
+        if (_amountWarriors < MaxLimitOfAvailableWarriors)
         {
             var enemy = Instantiate(_warriorPrefab, position, rotation);
             _enemies.Add(enemy);
