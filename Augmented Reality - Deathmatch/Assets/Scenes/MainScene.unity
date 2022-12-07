@@ -983,8 +983,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6a55563093502642adac45d71bbfce9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _warriorPrefab: {fileID: 7114476919347950937, guid: ef60a250581c22243b2120a99c908461, type: 3}
-  _spawnAuraEffect: {fileID: 3680723152682611606, guid: 43ab4e8fc30231a468851e64671d41a2, type: 3}
+  _warriorPrefab: {fileID: 3446000478938648184, guid: ef60a250581c22243b2120a99c908461, type: 3}
   _setupModeText: {fileID: 1610964845}
   _destroyModeText: {fileID: 1216889732}
   _numbersOfWarriorsOnSceneText: {fileID: 1210662056}

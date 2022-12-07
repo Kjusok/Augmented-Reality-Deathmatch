@@ -20,18 +20,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    [SerializeField] private GameObject _warriorPrefab;
-    [SerializeField] private GameObject _spawnAuraEffect;
+    [SerializeField] private Warrior _warriorPrefab;
     [SerializeField] private GameObject _setupModeText;
     [SerializeField] private GameObject _destroyModeText;
     [SerializeField] private Text _numbersOfWarriorsOnSceneText;
-    [SerializeField] private List<GameObject> _enemies;
+    [SerializeField] private List<Warrior> _enemies;
     [SerializeField] private Toggle _toggleSetupMode;
     [SerializeField] private Toggle _toggleDestroyMode;
  
-    private int _counter;
+    private int _currentAmountWarriors;
 
-    public List<GameObject> Enemies => _enemies;
+    public List<Warrior> Enemies => _enemies;
     public Toggle ToggleSetupMode => _toggleSetupMode;
     public Toggle ToggleDestoryMode => _toggleDestroyMode;
 
@@ -51,7 +50,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (_counter == MaxLimitOfAvailableWarriors)
+        if (_currentAmountWarriors == MaxLimitOfAvailableWarriors)
         {
             _toggleSetupMode.interactable = false;
             _toggleSetupMode.isOn = false;
@@ -89,19 +88,19 @@ public class GameManager : MonoBehaviour
 
     private void AddNumbersOnUI()
     {
-        _counter++;
-        _numbersOfWarriorsOnSceneText.text = _counter + "/5";
+        _currentAmountWarriors++;
+        _numbersOfWarriorsOnSceneText.text = _currentAmountWarriors + "/5";
     }
 
     public void WarriorDead()
     {
-        _counter--;
-        _numbersOfWarriorsOnSceneText.text = _counter + "/5";
+        _currentAmountWarriors--;
+        _numbersOfWarriorsOnSceneText.text = _currentAmountWarriors + "/5";
     }
 
     public void TryInstantiateWarrior(Vector3 position, Quaternion rotation)
     {
-        if (_counter < MaxLimitOfAvailableWarriors)
+        if (_currentAmountWarriors < MaxLimitOfAvailableWarriors)
         {
             var enemy = Instantiate(_warriorPrefab, position, rotation);
             _enemies.Add(enemy);
