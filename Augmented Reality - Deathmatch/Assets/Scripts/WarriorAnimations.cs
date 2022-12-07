@@ -9,14 +9,14 @@ public class WarriorAnimations : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private Warrior _animationFlag;
 
-    private int _attackSpeedStateName = Animator.StringToHash("AttackSpeed");
-    private int _rightTurnStateName = Animator.StringToHash("RightTurn");
-    private int _leftTurnStateName = Animator.StringToHash("LeftTurn");
-    private int _shootStateName = Animator.StringToHash("Shoot");
-    private int _idleEventStateName = Animator.StringToHash("IdleEvent");
-    private int _hitStateName = Animator.StringToHash("Hit");
-    private int _deathStateName = Animator.StringToHash("Death");
-    private int _jumpStateName = Animator.StringToHash("Jump");
+    private readonly int _attackSpeedStateName = Animator.StringToHash("AttackSpeed");
+    private readonly int _rightTurnStateName = Animator.StringToHash("RightTurn");
+    private readonly int _leftTurnStateName = Animator.StringToHash("LeftTurn");
+    private readonly int _shootStateName = Animator.StringToHash("Shoot");
+    private readonly int _idleEventStateName = Animator.StringToHash("IdleEvent");
+    private readonly int _hitStateName = Animator.StringToHash("Hit");
+    private readonly int _deathStateName = Animator.StringToHash("Death");
+    private readonly int _jumpStateName = Animator.StringToHash("Jump");
 
 
     private void Awake()

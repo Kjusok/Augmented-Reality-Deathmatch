@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> _healthUnitsList;
-    [SerializeField] private List<float> _valueForDestroyUnitsList;
+    [SerializeField] private List<GameObject> _healthChunksList;
+    [SerializeField] private List<float> _valueForDestroyChunksList;
     [SerializeField] private Warrior _health;
     [SerializeField] private GameObject _heathUpText;
 
-    private float _healthInOneUnit;
+    private float _healthInOneChunk;
     private float _healthInStart;
     private Camera _mainCamera;
 
@@ -18,7 +18,7 @@ public class HealthBar : MonoBehaviour
     {
         _healthInStart = _health.Health;
 
-        CalculateHealthAtOneUnit();
+        CalculateHealthAtOneChunk();
     }
 
     private void Start()
@@ -28,55 +28,55 @@ public class HealthBar : MonoBehaviour
 
     private void Update()
     {
-        CheckCurrentHealthUnits();
-        ChangeColorUnits();
+        CheckCurrentHealthChunks();
+        ChangeColorChunks();
 
         if (_mainCamera != null)
         {
-            var camXForm = _mainCamera.transform;
-            var forward = transform.position - camXForm.position;
+            var cameraXTransform = _mainCamera.transform;
+            var forward = transform.position - cameraXTransform.position;
             forward.Normalize();
-            var up = Vector3.Cross(forward, camXForm.right);
+            var up = Vector3.Cross(forward, cameraXTransform.right);
             transform.rotation = Quaternion.LookRotation(forward, up);
             _heathUpText.transform.rotation = Quaternion.LookRotation(forward, up);
         }
     }
 
-    private void CalculateHealthAtOneUnit()
+    private void CalculateHealthAtOneChunk()
     {
-        _healthInOneUnit = (float)_health.Health / _healthUnitsList.Count;
+        _healthInOneChunk = (float)_health.Health / _healthChunksList.Count;
 
         var value = 0f;
 
-        for (int i = 0; _valueForDestroyUnitsList.Count < _healthUnitsList.Count; i++)
+        while (_valueForDestroyChunksList.Count < _healthChunksList.Count)
         {
-            _valueForDestroyUnitsList.Add(value);
-            value += _healthInOneUnit;
+            _valueForDestroyChunksList.Add(value);
+            value += _healthInOneChunk;
         }
     }
 
-    private void CheckCurrentHealthUnits()
+    private void CheckCurrentHealthChunks()
     {
-        for (int i = 0; i < _valueForDestroyUnitsList.Count; i++)
+        for (int i = 0; i < _valueForDestroyChunksList.Count; i++)
         {
-            var unitValue = _valueForDestroyUnitsList[i];
+            var unitValue = _valueForDestroyChunksList[i];
 
             if (_health.Health <= unitValue)
             {
-                _healthUnitsList[i].SetActive(false);
+                _healthChunksList[i].SetActive(false);
             }
             else
             {
-                _healthUnitsList[i].SetActive(true);
+                _healthChunksList[i].SetActive(true);
             }
         }
     }
 
-    private void ChangeColorUnits()
+    private void ChangeColorChunks()
     {
         var value = _health.Health / _healthInStart;
 
-        foreach (GameObject unit in _healthUnitsList)
+        foreach (GameObject unit in _healthChunksList)
         {
             var color = unit.GetComponent<Image>();
             color.color = new Color(1, value, 0);

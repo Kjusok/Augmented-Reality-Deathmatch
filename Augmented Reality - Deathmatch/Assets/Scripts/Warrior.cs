@@ -16,7 +16,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     private const float TimeForDeath = 5;
     private const float TimeForIdleEventAnim = 10;
 
-    [SerializeField] private GameObject _currentEnemy;
+    [SerializeField] private Warrior _currentEnemy;
     [SerializeField] private int _speed;
     [SerializeField] private Shot _shotPrefab;
     [SerializeField] private Transform _ganBarrel;
@@ -100,13 +100,13 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
         }
     }
 
-    private GameObject FindClosestEnemy()
+    private Warrior FindClosestEnemy()
     {
         
         float distance = Mathf.Infinity;
         Vector3 position = transform.position;
 
-        foreach (GameObject enemy in GameManager.Instance.Enemies)
+        foreach (Warrior enemy in GameManager.Instance.Enemies)
         {
             if (enemy != null && position != enemy.transform.position)
             {
