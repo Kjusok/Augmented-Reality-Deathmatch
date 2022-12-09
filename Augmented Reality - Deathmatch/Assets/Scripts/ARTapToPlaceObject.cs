@@ -10,6 +10,7 @@ public class ARTapToPlaceObject : MonoBehaviour
     [SerializeField] private GameObject _placementIndificator;
     [SerializeField] private GameObject _spawnPosition;
     [SerializeField] private ARRaycastManager _arRaycastManager;
+    [SerializeField] private GameManager _gameManager;
 
     private Pose _placementPose;
     private bool _placementPoseIsValid = false;
@@ -22,7 +23,7 @@ public class ARTapToPlaceObject : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.ToggleSetupMode.isOn)
+        if (_gameManager.IsSetupState)
         {
             _spawnPosition.SetActive(true);
 
@@ -67,9 +68,9 @@ public class ARTapToPlaceObject : MonoBehaviour
 
     public void SpawnWarriorOnPlacementIndicatorPosition()
     {
-        if (_placementPoseIsValid && GameManager.Instance.ToggleSetupMode.isOn)
+        if (_placementPoseIsValid && _gameManager.IsSetupState)
         {
-            GameManager.Instance.TryInstantiateWarrior(_placementPose.position, _placementPose.rotation);
+            _gameManager.TryInstantiateWarrior(_placementPose.position, _placementPose.rotation);
         }
     }
 }

@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32a0a9c0bb8688640a30c7250e7734ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthUnitsList:
+  _healthChunksList:
   - {fileID: 8938977367406966157}
   - {fileID: 6204131429055869779}
   - {fileID: 6204131428801377507}
@@ -111,7 +111,7 @@ MonoBehaviour:
   - {fileID: 6204131428246003044}
   - {fileID: 6204131427807423807}
   - {fileID: 6204131427954697517}
-  _valueForDestroyUnitsList: []
+  _valueForDestroyChunksList: []
   _health: {fileID: 3446000478938648184}
   _heathUpText: {fileID: 2019824324858739985}
 --- !u!1 &1807116560619098001
@@ -2157,6 +2157,7 @@ MonoBehaviour:
   _sparksEffectFromBarrelGun: {fileID: 4118878036268696415, guid: b56d8eae2c7190e42b8a967333609af5, type: 3}
   _warriorAnimations: {fileID: 4623458773813300788}
   _healthBar: {fileID: 1807116560267569312}
+  IsDead: 0
 --- !u!54 &-6556523465857145696
 Rigidbody:
   m_ObjectHideFlags: 0

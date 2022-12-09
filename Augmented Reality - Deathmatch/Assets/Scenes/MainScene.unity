@@ -377,6 +377,7 @@ MonoBehaviour:
   _placementIndificator: {fileID: 105591249}
   _spawnPosition: {fileID: 696131481}
   _arRaycastManager: {fileID: 1935595326}
+  _gameManager: {fileID: 1156224349}
 --- !u!4 &148315033
 Transform:
   m_ObjectHideFlags: 0

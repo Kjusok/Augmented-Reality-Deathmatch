@@ -24,9 +24,10 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     [SerializeField] private WarriorAnimations _warriorAnimations;
     [SerializeField] private GameObject _healthBar;
 
+    private GameManager _gameManager;
     private bool _isShooting = false;
     private bool _isSpawned = false;
-    private bool _isDead = false;
+    public bool IsDead;
     private float _targetRotation;
     private float _startRotation;
     private int _healthInStart;
@@ -35,6 +36,8 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     private float _timerForDeath;
     private float _timerForIdleEventAnim = TimeForIdleEventAnim;
 
+    public event Action<Warrior> Dead;
+    
     public int Health
     {
         get; private set;
@@ -67,6 +70,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
         _damage = UnityEngine.Random.Range(MinDamage, MaxDamage);
         _healthInStart = Health;
     }
+
     private void Update()
     {
         ShowsHealthBar();
@@ -74,7 +78,9 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
 
         if (FindClosestEnemy())
         {
-            if (_isSpawned && !_isDead)
+            _currentEnemyHealth = _currentEnemy.GetComponent<Warrior>().Health;
+
+            if (_isSpawned && !IsDead)
             {
                 RotationToClosestEnemy();
                 Shooting();
@@ -102,13 +108,12 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
 
     private Warrior FindClosestEnemy()
     {
-        
         float distance = Mathf.Infinity;
         Vector3 position = transform.position;
 
-        foreach (Warrior enemy in GameManager.Instance.Enemies)
+        foreach (Warrior enemy in _gameManager.Enemies)
         {
-            if (enemy != null && position != enemy.transform.position)
+            if (!enemy.IsDead && position != enemy.transform.position)
             {
                 Vector3 diff = enemy.transform.position - position;
                 float curDistance = diff.sqrMagnitude;
@@ -116,7 +121,6 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
                 {
                     _currentEnemy = enemy;
                     distance = curDistance;
-                    _currentEnemyHealth = _currentEnemy.GetComponent<Warrior>().Health;
                 }
             }
         }
@@ -168,10 +172,14 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
         {
             PlayngAnimShooting = true;
         }
+        else
+        {
+            PlayngAnimShooting = false;
+        }
+
         if (_currentEnemyHealth <= 0)
         {
             PlayngAnimShooting = false;
-            GameManager.Instance.Enemies.Remove(_currentEnemy);
         }
     }
 
@@ -191,7 +199,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
 
     private void DestroyAfterDeath()
     {
-        if (_isDead)
+        if (IsDead)
         {
             _timerForDeath += Time.deltaTime;
 
@@ -208,7 +216,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
         {
             _healthBar.SetActive(false);
         }
-        else if (!_isDead)
+        else if (!IsDead)
         {
             _healthBar.SetActive(true);
         }
@@ -216,10 +224,16 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
 
     private void DeathState()
     {
-        _isDead = true;
+        IsDead = true;
         _healthBar.SetActive(false);
         _warriorAnimations.DeathAnimation();
-        GameManager.Instance.WarriorDead();
+
+        Dead?.Invoke(this);
+    }
+
+    public void Init(GameManager gameManager)
+    {
+        _gameManager = gameManager;
     }
 
     public void TakeDamage(int damage)
@@ -232,7 +246,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
             Health = 0;
         }
 
-        if (Health == 0 && !_isDead)
+        if (Health == 0 && !IsDead)
         {
             DeathState();
         }
@@ -240,7 +254,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (_isSpawned && Health < _healthInStart && !_isDead && !GameManager.Instance.ToggleDestoryMode.isOn)
+        if (_isSpawned && Health < _healthInStart && !IsDead && !_gameManager.IsDestroyState)
         {
             Health += _healthInStart / ValueForePercents;
 
@@ -252,7 +266,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
             _warriorAnimations.JumpAnimation();
         }
 
-        if (GameManager.Instance.ToggleDestoryMode.isOn)
+        if (_gameManager.IsDestroyState)
         {
             Health = 0;
             DeathState();
