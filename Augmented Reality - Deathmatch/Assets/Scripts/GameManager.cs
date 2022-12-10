@@ -6,20 +6,6 @@ public class GameManager : MonoBehaviour
 {
     private const int MaxLimitOfAvailableWarriors = 5;
 
-    private static GameManager _instance;
-
-    public static GameManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                Debug.LogError("Instance not specified");
-            }
-            return _instance;
-        }
-    }
-
     [SerializeField] private Warrior _warriorPrefab;
     [SerializeField] private GameObject _setupModeText;
     [SerializeField] private GameObject _destroyModeText;
@@ -27,26 +13,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<Warrior> _enemies;
     [SerializeField] private Toggle _toggleSetupMode;
     [SerializeField] private Toggle _toggleDestroyMode;
- 
+
     private int _amountWarriors;
 
-    public List<Warrior> Enemies => _enemies;
-    public Toggle ToggleSetupMode => _toggleSetupMode;
-    public Toggle ToggleDestoryMode => _toggleDestroyMode;
-
-
-    private void Awake()
+    public IEnumerable<Warrior> Enemies => _enemies;
+    public bool IsSetupState
     {
-        _instance = this;
+        get; private set;
+    }
+    public bool IsDestroyState
+    {
+        get; private set;
     }
 
-    private void OnDestroy()
-    {
-        if (_instance == this)
-        {
-            _instance = null;
-        }
-    }
 
     private void Update()
     {
@@ -60,8 +39,31 @@ public class GameManager : MonoBehaviour
             _toggleSetupMode.interactable = true;
         }
 
-        SetButtonDown(_toggleSetupMode,_setupModeText);
-        SetButtonDown(_toggleDestroyMode,_destroyModeText);
+        SetButtonDown(_toggleSetupMode, _setupModeText);
+        SetButtonDown(_toggleDestroyMode, _destroyModeText);
+
+        CheckToggleState();
+    }
+
+    private void CheckToggleState()
+    {
+        if (_toggleSetupMode.isOn)
+        {
+            IsSetupState = true;
+        }
+        else
+        {
+            IsSetupState = false;
+        }
+
+        if (_toggleDestroyMode.isOn)
+        {
+            IsDestroyState = true;
+        }
+        else
+        {
+            IsDestroyState = false;
+        }
     }
 
     private void SetButtonDown(Toggle mode, GameObject modeText)
@@ -89,13 +91,16 @@ public class GameManager : MonoBehaviour
     private void AddNumbersOnUI()
     {
         _amountWarriors++;
-        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/5";
+        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/" + MaxLimitOfAvailableWarriors;
     }
 
-    public void WarriorDead()
+    private void WarriorDead(Warrior warrior)
     {
+        warrior.Dead -= WarriorDead;
+
         _amountWarriors--;
-        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/5";
+        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/" + MaxLimitOfAvailableWarriors;
+        _enemies.Remove(warrior);
     }
 
     public void TryInstantiateWarrior(Vector3 position, Quaternion rotation)
@@ -104,6 +109,9 @@ public class GameManager : MonoBehaviour
         {
             var enemy = Instantiate(_warriorPrefab, position, rotation);
             _enemies.Add(enemy);
+
+            enemy.Init(this);
+            enemy.Dead += WarriorDead;
 
             AddNumbersOnUI();
         }
