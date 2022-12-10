@@ -27,7 +27,6 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     private GameManager _gameManager;
     private bool _isShooting = false;
     private bool _isSpawned = false;
-    public bool IsDead;
     private float _targetRotation;
     private float _startRotation;
     private int _healthInStart;
@@ -37,7 +36,11 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     private float _timerForIdleEventAnim = TimeForIdleEventAnim;
 
     public event Action<Warrior> Dead;
-    
+
+    public bool IsDead
+    {
+        get; private set;
+    }
     public int Health
     {
         get; private set;

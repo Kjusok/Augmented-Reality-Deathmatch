@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
     private void AddNumbersOnUI()
     {
         _amountWarriors++;
-        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/5";
+        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/" + MaxLimitOfAvailableWarriors;
     }
 
     private void WarriorDead(Warrior warrior)
@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
         warrior.Dead -= WarriorDead;
 
         _amountWarriors--;
-        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/5";
+        _numbersOfWarriorsOnSceneText.text = _amountWarriors + "/" + MaxLimitOfAvailableWarriors;
         _enemies.Remove(warrior);
     }
 
