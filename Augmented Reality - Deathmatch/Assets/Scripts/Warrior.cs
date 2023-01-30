@@ -34,6 +34,10 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     private int _currentEnemyHealth;
     private float _timerForDeath;
     private float _timerForIdleEventAnim = TimeForIdleEventAnim;
+    private bool _playngAnimShooting;
+    private bool _playngAnimRotationRight;
+    private bool _playngAnimRotationLeft;
+    private bool _playngAnimIdleEvent;
 
     public event Action<Warrior> Dead;
 
@@ -45,30 +49,14 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     {
         get; private set;
     }
-    public bool PlayngAnimRotationRight
-    {
-        get; private set;
-    }
-    public bool PlayngAnimRotationLeft
-    {
-        get; private set;
-    }
-    public bool PlayngAnimShooting
-    {
-        get; private set;
-    }
-    public bool PlayngAnimIdleEvent
-    {
-        get; private set;
-    }
 
 
     private void Awake()
     {
-        PlayngAnimRotationLeft = false;
-        PlayngAnimRotationRight = false;
-        PlayngAnimShooting = false;
-        PlayngAnimIdleEvent = false;
+        _playngAnimRotationLeft = false;
+        _playngAnimRotationRight = false;
+        _playngAnimShooting = false;
+        _playngAnimIdleEvent = false;
         Health = UnityEngine.Random.Range(MinHeath, MaxHeath);
         _damage = UnityEngine.Random.Range(MinDamage, MaxDamage);
         _healthInStart = Health;
@@ -78,6 +66,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     {
         ShowsHealthBar();
         DestroyAfterDeath();
+        CheckFlagsForAnimations();
 
         if (FindClosestEnemy())
         {
@@ -91,22 +80,29 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
         }
         else
         {
-            PlayngAnimRotationRight = false;
-            PlayngAnimRotationLeft = false;
-            PlayngAnimShooting = false;
+            _playngAnimRotationRight = false;
+            _playngAnimRotationLeft = false;
+            _playngAnimShooting = false;
 
             _timerForIdleEventAnim -= Time.deltaTime;
 
             if (_timerForIdleEventAnim <= 0)
             {
                 _timerForIdleEventAnim = TimeForIdleEventAnim;
-                PlayngAnimIdleEvent = true;
+                _playngAnimIdleEvent = true;
             }
             else
             {
-                PlayngAnimIdleEvent = false;
+                _playngAnimIdleEvent = false;
             }
         }
+    }
+
+    private void CheckFlagsForAnimations()
+    {
+        _warriorAnimations.CheckAnimationShoting(_playngAnimShooting);
+        _warriorAnimations.CheckAnimationRotation(_playngAnimRotationRight, _playngAnimRotationLeft);
+        _warriorAnimations.CheckAnimationsIdleEvent(_playngAnimIdleEvent);
     }
 
     private Warrior FindClosestEnemy()
@@ -141,19 +137,19 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
 
         if (_startRotation < _targetRotation)
         {
-            PlayngAnimRotationRight = true;
+            _playngAnimRotationRight = true;
             _startRotation = (float)Math.Round(transform.rotation.y, 2);
         }
         else
         {
-            PlayngAnimRotationLeft = true;
+            _playngAnimRotationLeft = true;
             _startRotation = (float)Math.Round(transform.rotation.y, 2);
         }
         if ((Math.Abs(_startRotation) - Math.Abs(_targetRotation)) > MinRotationValue &&
             (Math.Abs(_startRotation) - Math.Abs(_targetRotation)) < MaxRotationValue)
         {
-            PlayngAnimRotationRight = false;
-            PlayngAnimRotationLeft = false;
+            _playngAnimRotationRight = false;
+            _playngAnimRotationLeft = false;
         }
     }
 
@@ -173,16 +169,16 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     {
         if (Math.Abs(_startRotation) - Math.Abs(_targetRotation) == 0)
         {
-            PlayngAnimShooting = true;
+            _playngAnimShooting = true;
         }
         else
         {
-            PlayngAnimShooting = false;
+            _playngAnimShooting = false;
         }
 
         if (_currentEnemyHealth <= 0)
         {
-            PlayngAnimShooting = false;
+            _playngAnimShooting = false;
         }
     }
 

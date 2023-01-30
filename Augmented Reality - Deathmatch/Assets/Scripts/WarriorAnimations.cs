@@ -7,7 +7,6 @@ public class WarriorAnimations : MonoBehaviour
     private const float MaxForSpeedAttackAnim = 1.5f;
 
     [SerializeField] private Animator _animator;
-    [SerializeField] private Warrior _animationFlag;
 
     private readonly int _attackSpeedStateName = Animator.StringToHash("AttackSpeed");
     private readonly int _rightTurnStateName = Animator.StringToHash("RightTurn");
@@ -24,39 +23,32 @@ public class WarriorAnimations : MonoBehaviour
         CreateSpeedAttack();
     }
 
-    private void Update()
-    {
-        AnimationRotation();
-        AnimationShoting();
-        AnimationsIdleEvent();
-    }
-
     private void CreateSpeedAttack()
     {
         var speed = (float) Math.Round(UnityEngine.Random.Range(MinForSpeedAttackAnim, MaxForSpeedAttackAnim),2);
         _animator.SetFloat(_attackSpeedStateName, speed);
     }
 
-    private void AnimationRotation()
+    public void CheckAnimationRotation(bool isRightTurn, bool isLeftTurn)
     {
-        if (_animationFlag.PlayngAnimRotationRight)
+        if (isRightTurn)
         {
             _animator.SetBool(_rightTurnStateName, true);
         }
-        else if(_animationFlag.PlayngAnimRotationLeft)
+        else if (isLeftTurn)
         {
             _animator.SetBool(_leftTurnStateName, true);
         }
-        else if (!_animationFlag.PlayngAnimRotationRight && !_animationFlag.PlayngAnimRotationLeft)
+        else if (!isRightTurn && !isLeftTurn)
         {
             _animator.SetBool(_rightTurnStateName, false);
             _animator.SetBool(_leftTurnStateName, false);
         }
     }
 
-    private void AnimationShoting()
+    public void CheckAnimationShoting(bool isShoting)
     {
-        if (_animationFlag.PlayngAnimShooting)
+        if (isShoting)
         {
             _animator.SetBool(_shootStateName, true);
         }
@@ -66,9 +58,9 @@ public class WarriorAnimations : MonoBehaviour
         }
     }
 
-    private void AnimationsIdleEvent()
+    public void CheckAnimationsIdleEvent(bool isIdleEvent)
     {
-        if (_animationFlag.PlayngAnimIdleEvent)
+        if (isIdleEvent)
         {
             _animator.SetBool(_idleEventStateName, true);
         }
