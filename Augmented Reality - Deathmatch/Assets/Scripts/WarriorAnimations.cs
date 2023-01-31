@@ -12,7 +12,6 @@ public class WarriorAnimations : MonoBehaviour
     private readonly int _rightTurnStateName = Animator.StringToHash("RightTurn");
     private readonly int _leftTurnStateName = Animator.StringToHash("LeftTurn");
     private readonly int _shootStateName = Animator.StringToHash("Shoot");
-    private readonly int _idleEventStateName = Animator.StringToHash("IdleEvent");
     private readonly int _hitStateName = Animator.StringToHash("Hit");
     private readonly int _deathStateName = Animator.StringToHash("Death");
     private readonly int _jumpStateName = Animator.StringToHash("Jump");
@@ -55,18 +54,6 @@ public class WarriorAnimations : MonoBehaviour
         else
         {
             _animator.SetBool(_shootStateName, false);
-        }
-    }
-
-    public void CheckAnimationsIdleEvent(bool isIdleEvent)
-    {
-        if (isIdleEvent)
-        {
-            _animator.SetBool(_idleEventStateName, true);
-        }
-        else
-        {
-            _animator.SetBool(_idleEventStateName, false);
         }
     }
 

@@ -14,7 +14,6 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     private const float MinCorrectionForSpawnSparks = 0.25f;
     private const float MaxCorrectionForSpawnSparks = 0.6f;
     private const float TimeForDeath = 5;
-    private const float TimeForIdleEventAnim = 10;
 
     [SerializeField] private Warrior _currentEnemy;
     [SerializeField] private int _speed;
@@ -33,11 +32,9 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     private int _damage;
     private int _currentEnemyHealth;
     private float _timerForDeath;
-    private float _timerForIdleEventAnim = TimeForIdleEventAnim;
     private bool _playngAnimShooting;
     private bool _playngAnimRotationRight;
     private bool _playngAnimRotationLeft;
-    private bool _playngAnimIdleEvent;
 
     public event Action<Warrior> Dead;
 
@@ -56,7 +53,6 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
         _playngAnimRotationLeft = false;
         _playngAnimRotationRight = false;
         _playngAnimShooting = false;
-        _playngAnimIdleEvent = false;
         Health = UnityEngine.Random.Range(MinHeath, MaxHeath);
         _damage = UnityEngine.Random.Range(MinDamage, MaxDamage);
         _healthInStart = Health;
@@ -83,18 +79,6 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
             _playngAnimRotationRight = false;
             _playngAnimRotationLeft = false;
             _playngAnimShooting = false;
-
-            _timerForIdleEventAnim -= Time.deltaTime;
-
-            if (_timerForIdleEventAnim <= 0)
-            {
-                _timerForIdleEventAnim = TimeForIdleEventAnim;
-                _playngAnimIdleEvent = true;
-            }
-            else
-            {
-                _playngAnimIdleEvent = false;
-            }
         }
     }
 
@@ -102,7 +86,6 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     {
         _warriorAnimations.CheckAnimationShoting(_playngAnimShooting);
         _warriorAnimations.CheckAnimationRotation(_playngAnimRotationRight, _playngAnimRotationLeft);
-        _warriorAnimations.CheckAnimationsIdleEvent(_playngAnimIdleEvent);
     }
 
     private Warrior FindClosestEnemy()
@@ -145,6 +128,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
             _playngAnimRotationLeft = true;
             _startRotation = (float)Math.Round(transform.rotation.y, 2);
         }
+
         if ((Math.Abs(_startRotation) - Math.Abs(_targetRotation)) > MinRotationValue &&
             (Math.Abs(_startRotation) - Math.Abs(_targetRotation)) < MaxRotationValue)
         {
