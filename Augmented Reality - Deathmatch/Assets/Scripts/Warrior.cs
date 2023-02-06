@@ -9,11 +9,12 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     private const int MinDamage = 5;
     private const int MaxDamage = 9;
     private const int ValueForePercents = 4;
-    private const float MinRotationValue = -0.1f;
-    private const float MaxRotationValue = 0.1f;
+    private const float MinForSpeedAttackAnim = 0.7f;
+    private const float MaxForSpeedAttackAnim = 1.5f;
     private const float MinCorrectionForSpawnSparks = 0.25f;
     private const float MaxCorrectionForSpawnSparks = 0.6f;
-    private const float TimeForDeath = 5;
+    private const float TimeForDeath = 5f;
+    private const float ShotAnimationLength = 0.15f;
 
     [SerializeField] private Warrior _currentEnemy;
     [SerializeField] private int _speed;
@@ -32,9 +33,8 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     private int _damage;
     private int _currentEnemyHealth;
     private float _timerForDeath;
-    private bool _playngAnimShooting;
-    private bool _playngAnimRotationRight;
-    private bool _playngAnimRotationLeft;
+    private float _timerForShot;
+    private float _speedOfShooting;
 
     public event Action<Warrior> Dead;
 
@@ -50,20 +50,19 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
 
     private void Awake()
     {
-        _playngAnimRotationLeft = false;
-        _playngAnimRotationRight = false;
-        _playngAnimShooting = false;
+        _speedOfShooting = (float)Math.Round(UnityEngine.Random.Range(MinForSpeedAttackAnim, MaxForSpeedAttackAnim), 2);
         Health = UnityEngine.Random.Range(MinHeath, MaxHeath);
         _damage = UnityEngine.Random.Range(MinDamage, MaxDamage);
         _healthInStart = Health;
+
+        _warriorAnimations.CreateSpeedAttack(_speedOfShooting);
     }
 
     private void Update()
     {
         ShowsHealthBar();
         DestroyAfterDeath();
-        CheckFlagsForAnimations();
-
+       
         if (FindClosestEnemy())
         {
             _currentEnemyHealth = _currentEnemy.GetComponent<Warrior>().Health;
@@ -74,18 +73,6 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
                 Shooting();
             }
         }
-        else
-        {
-            _playngAnimRotationRight = false;
-            _playngAnimRotationLeft = false;
-            _playngAnimShooting = false;
-        }
-    }
-
-    private void CheckFlagsForAnimations()
-    {
-        _warriorAnimations.CheckAnimationShoting(_playngAnimShooting);
-        _warriorAnimations.CheckAnimationRotation(_playngAnimRotationRight, _playngAnimRotationLeft);
     }
 
     private Warrior FindClosestEnemy()
@@ -117,24 +104,9 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
         transform.rotation = Quaternion.Lerp(transform.rotation, rotation, _speed * Time.deltaTime);
 
         _targetRotation = (float)Math.Round(rotation.y, 2);
+        _startRotation = (float)Math.Round(transform.rotation.y, 2);
 
-        if (_startRotation < _targetRotation)
-        {
-            _playngAnimRotationRight = true;
-            _startRotation = (float)Math.Round(transform.rotation.y, 2);
-        }
-        else
-        {
-            _playngAnimRotationLeft = true;
-            _startRotation = (float)Math.Round(transform.rotation.y, 2);
-        }
-
-        if ((Math.Abs(_startRotation) - Math.Abs(_targetRotation)) > MinRotationValue &&
-            (Math.Abs(_startRotation) - Math.Abs(_targetRotation)) < MaxRotationValue)
-        {
-            _playngAnimRotationRight = false;
-            _playngAnimRotationLeft = false;
-        }
+        _warriorAnimations.PlayRotation((Math.Abs(_startRotation) - Math.Abs(_targetRotation)));
     }
 
     private void SpawnLaserBullet()
@@ -143,6 +115,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
         {
             var bullet = Instantiate(_shotPrefab, _ganBarrel.position, transform.rotation);
             bullet.GetComponent<Shot>().Damage = _damage;
+
             SpawnSparksFromBarrelGun();
         }
 
@@ -151,18 +124,17 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
 
     private void Shooting()
     {
-        if (Math.Abs(_startRotation) - Math.Abs(_targetRotation) == 0)
+        if (Math.Abs(_startRotation) - Math.Abs(_targetRotation) == 0 && _currentEnemyHealth > 0)
         {
-            _playngAnimShooting = true;
-        }
-        else
-        {
-            _playngAnimShooting = false;
-        }
-
-        if (_currentEnemyHealth <= 0)
-        {
-            _playngAnimShooting = false;
+            if (_timerForShot <= 0)
+            {
+                _warriorAnimations.PlayShot();
+                _timerForShot = ShotAnimationLength / _speedOfShooting;
+            }
+            else
+            {
+                _timerForShot -= Time.deltaTime;
+            }
         }
     }
 
@@ -209,7 +181,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     {
         IsDead = true;
         _healthBar.SetActive(false);
-        _warriorAnimations.DeathAnimation();
+        _warriorAnimations.PlayDeath();
 
         Dead?.Invoke(this);
     }
@@ -222,7 +194,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
     public void TakeDamage(int damage)
     {
         Health -= damage;
-        _warriorAnimations.AnimationsTakeHit();
+        _warriorAnimations.PlayTakeHit();
 
         if (Health < 0)
         {
@@ -246,7 +218,7 @@ public class Warrior : MonoBehaviour, IPointerDownHandler
                 Health = _healthInStart;
             }
 
-            _warriorAnimations.JumpAnimation();
+            _warriorAnimations.PlayJump();
         }
 
         if (_gameManager.IsDestroyState)
