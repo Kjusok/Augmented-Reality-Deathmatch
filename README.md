@@ -8,4 +8,5 @@
  Link to gameplay example video: https://youtu.be/rIC0vtTJADw
 
  Link to Android build apk: https://drive.google.com/file/d/1kMyWDlSVb3L2oU7F8VQo_AmYmO8RL6Qh/view?usp=share_link
-![screenshot](/Augmented%20Reality%20-%20Deathmatch/Assets/Materials/Screenshot.jpg)
+
+![screenshot](/Screenshot.png)
